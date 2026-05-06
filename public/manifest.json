@@ -7,6 +7,7 @@
   "dir": "ltr",
   "orientation": "portrait",
   "categories": ["finance", "productivity"],
+  "iarc_rating_id": "e58c067e-2f58-4034-8c01-71fb27814a6e",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png",
@@ -27,14 +28,21 @@
       "sizes": "1080x1920",
       "type": "image/webp",
       "form_factor": "narrow",
-      "label": "Dashboard Arcade"
+      "label": "Dashboard Principal"
     },
     {
       "src": "https://images.unsplash.com/photo-1554224155-169641357599?auto=format&fit=crop&q=80&w=1920&h=1080",
       "sizes": "1920x1080",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Gestión Financiera Desktop"
+      "label": "Vista de Escritorio"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=1080&h=1920",
+      "sizes": "1080x1920",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Historial de Transacciones"
     }
   ],
   "shortcuts": [
@@ -42,12 +50,41 @@
       "name": "Añadir Gasto",
       "url": "/transactions",
       "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Presupuestos",
+      "url": "/budgets",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/transactions",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "text/csv": [".csv"]
+      }
     }
   ],
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": ["window-controls-overlay", "tabbed", "standalone"],
   "theme_color": "#0f172a",
-  "background_color": "#0f172a"
+  "background_color": "#0f172a",
+  "prefer_related_applications": false
 }
