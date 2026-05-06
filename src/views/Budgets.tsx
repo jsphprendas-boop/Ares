@@ -27,7 +27,7 @@ export const BudgetsView = ({ budgets, transactions }: BudgetsViewProps) => {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
     
@@ -38,7 +38,6 @@ export const BudgetsView = ({ budgets, transactions }: BudgetsViewProps) => {
     }
     
     const newBudget: Budget = {
-      id: crypto.randomUUID(),
       userId: profile.userId || 'local',
       category,
       amount: parsedAmount,
@@ -46,15 +45,15 @@ export const BudgetsView = ({ budgets, transactions }: BudgetsViewProps) => {
       period: 'monthly'
     };
 
-    storageService.saveBudget(newBudget);
+    await storageService.saveBudget(newBudget);
     setShowForm(false);
     setAmount('');
-    window.location.reload(); // Refresh to update parent state (simplest for local mode)
   };
 
-  const handleDelete = (id: string) => {
-    storageService.deleteBudget(id);
-    window.location.reload();
+  const handleDelete = async (id: number) => {
+    if (confirm('¿Deseas eliminar este presupuesto?')) {
+      await storageService.deleteBudget(id);
+    }
   };
 
   return (

@@ -33,7 +33,7 @@ export const GoalsView = ({ goals }: GoalsViewProps) => {
   const [deadline, setDeadline] = useState('');
   const [injectValues, setInjectValues] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
 
@@ -44,7 +44,6 @@ export const GoalsView = ({ goals }: GoalsViewProps) => {
     }
 
     const newGoal: SavingsGoal = {
-      id: crypto.randomUUID(),
       userId: profile.userId || 'local',
       name,
       targetAmount: parsedTarget,
@@ -53,28 +52,26 @@ export const GoalsView = ({ goals }: GoalsViewProps) => {
       deadline
     };
 
-    storageService.saveGoal(newGoal);
+    await storageService.saveGoal(newGoal);
     setShowForm(false);
     setName(''); setTarget('');
-    window.location.reload();
   };
 
-  const updateGoal = (goal: SavingsGoal, amount: number) => {
+  const updateGoal = async (goal: SavingsGoal, amount: number) => {
     const wasIncomplete = goal.currentAmount < goal.targetAmount;
     const isNowComplete = amount >= goal.targetAmount;
 
     const updatedGoal = { ...goal, currentAmount: amount };
-    storageService.saveGoal(updatedGoal);
+    await storageService.saveGoal(updatedGoal);
     if (wasIncomplete && isNowComplete) {
       setShowVictory(updatedGoal);
-    } else {
-      window.location.reload();
     }
   };
 
-  const handleDelete = (id: string) => {
-    storageService.deleteGoal(id);
-    window.location.reload();
+  const handleDelete = async (id: number) => {
+    if (confirm('¿Deseas eliminar este objetivo?')) {
+      await storageService.deleteGoal(id);
+    }
   };
 
   return (

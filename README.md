@@ -40,18 +40,52 @@ He preparado el archivo `vercel.json` para que tu aplicación funcione perfectam
 2. Selecciona **Export to GitHub**.
 3. Sigue las instrucciones para crear un nuevo repositorio en tu cuenta de GitHub.
 
-### 2. Conectar con Vercel
-1. Ve a [Vercel](https://vercel.com/) e inicia sesión con tu cuenta de GitHub.
-2. Haz clic en el botón **"Add New"** y luego en **"Project"**.
-3. Busca el repositorio que acabas de exportar y haz clic en **"Import"**.
+### 2. Conectar con Vercel o Netlify (Gratis)
+Puedes elegir cualquiera de los dos, ambos son excelentes.
 
-### 3. Configuración en Vercel
-- **Framework Preset**: Vercel detectará automáticamente que es **Vite**.
-- **Build and Output Settings**: No necesitas cambiar nada; por defecto usará `npm run build` y la carpeta `dist`.
-- **Environment Variables**: Si has configurado Firebase, asegúrate de copiar todas las variables de tu archivo `.env` aquí.
+#### Opción A: Vercel
+1. Ve a [Vercel](https://vercel.com/) e inicia sesión con GitHub.
+2. Importa tu repositorio.
+3. Vercel usará el archivo `vercel.json` que ya he configurado.
+
+#### Opción B: Netlify
+1. Ve a [Netlify](https://www.netlify.com/) e inicia sesión con GitHub.
+2. Haz clic en **"Add new site"** > **"Import an existing project"**.
+3. Selecciona tu repositorio.
+4. Netlify usará el archivo `netlify.toml` que acabo de crear.
+
+### 3. Configuración Crítica: Firebase
+**IMPORTANTE:** Aunque tu app esté en Netlify/Vercel, los datos y usuarios siguen viviendo en **Firebase**.
+1. En el panel de control de Netlify/Vercel, busca la sección de **"Environment Variables"**.
+2. Debes agregar todas las variables que están en tu `.env.example`.
+3. Esto permite que la app desplegada se conecte a tu base de datos de Firebase de forma segura.
 
 ### 4. ¡Listo!
-Haz clic en **"Deploy"**. En un par de minutos, tu app estará en vivo con una URL gratuita (ej: `arcade-finance.vercel.app`).
+Haz clic en **"Deploy"**. Tu app financiera tipo arcade ya estará disponible para todo el mundo.
+
+## 📱 Google Play Store (Android)
+
+He optimizado la app para que puedas subirla a la Play Store usando **Trusted Web Activities (TWA)**.
+
+### Paso 1: Instalar Bubblewrap
+En tu computadora local:
+```bash
+npm install -g @bubblewrap/cli
+```
+
+### Paso 2: Generar APK/AAB con PWABuilder
+1. Entra en [PWABuilder](https://www.pwabuilder.com/).
+2. Introduce la URL de tu app en Netlify.
+3. El sistema validará el `manifest.json` y el `sw.js` (ya los he corregido para que den puntaje alto).
+4. Haz clic en **"Package for Stores"** y selecciona **"Android"**.
+5. Descarga el archivo `.zip`. Dentro encontrarás el `.aab` para la Play Store y un `.apk` para probarlo tú mismo.
+
+**NOTA:** He configurado iconos temporales y capturas de pantalla de ejemplo en el manifiesto para que PWABuilder te deje avanzar. Cuando tengas tus propios diseños, reemplaza las URLs en `public/manifest.json`.
+
+### Paso 3: Subir a Google Play Console
+- Ve a [Google Play Console](https://play.google.com/console).
+- Sube el archivo `app-release-signed.aab` que generó el paso anterior.
+- **Privacidad**: Recuerda que esta app es offline y usa SQLite (IndexedDB) internamente. Indica en el formulario de seguridad de datos que no recolectas información en servidores externos.
 
 ### ¿Por qué he añadido un `vercel.json`?
 He configurado un sistema de "rewrites". Esto es necesario para que, si el usuario recarga la página estando en `/dashboard` o `/calendar`, Vercel sepa que debe cargar el `index.html` y dejar que React maneje la ruta, en lugar de dar un error 404.

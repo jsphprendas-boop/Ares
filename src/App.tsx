@@ -14,14 +14,19 @@ import { TrendingUp, Sparkles, User, Zap } from 'lucide-react';
 import { cn } from './lib/utils';
 import { storageService } from './services/storageService';
 
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from './lib/db';
+
 const AppContents = () => {
   const { profile, loading, setLocalProfile } = useAuth();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [goals, setGoals] = useState<SavingsGoal[]>([]);
   const [showTutorial, setShowTutorial] = useState(false);
+
+  // Automatic "Live Data" from IndexedDB
+  const transactions = useLiveQuery(() => db.transactions.orderBy('date').reverse().toArray()) || [];
+  const budgets = useLiveQuery(() => db.budgets.toArray()) || [];
+  const goals = useLiveQuery(() => db.goals.toArray()) || [];
 
   useEffect(() => {
     // Show tutorial logic: if it's their first time loading in
@@ -34,21 +39,9 @@ const AppContents = () => {
     }
   }, [loading, profile]);
 
-  useEffect(() => {
-    if (loading) return;
-
-    if (profile) {
-      // Pull data from storage
-      setTransactions(storageService.getTransactions());
-      setBudgets(storageService.getBudgets());
-      setGoals(storageService.getGoals());
-    }
-  }, [profile, loading]);
-
-  const handleAddTransaction = (newTransaction: Transaction) => {
-    const txWithId = { ...newTransaction, id: crypto.randomUUID() };
-    storageService.saveTransaction(txWithId);
-    setTransactions(prev => [txWithId, ...prev]);
+  const handleAddTransaction = async (newTransaction: Transaction) => {
+    // No explicit state update needed, useLiveQuery will detect the new record
+    await storageService.saveTransaction(newTransaction);
   };
 
   if (loading) {

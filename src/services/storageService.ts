@@ -1,86 +1,61 @@
 
+import { db } from '../lib/db';
 import { Transaction, Budget, SavingsGoal, Profile } from '../types';
 
-const STORAGE_KEYS = {
-  TRANSACTIONS: 'arcade_finance_transactions',
-  BUDGETS: 'arcade_finance_budgets',
-  GOALS: 'arcade_finance_goals',
-  PROFILE: 'arcade_finance_profile'
-};
-
 export const storageService = {
-  // Generic getters/setters
-  get: <T>(key: string, defaultValue: T): T => {
-    try {
-      const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : defaultValue;
-    } catch (error) {
-      console.error(`Error parsing data from localStorage for key ${key}:`, error);
-      return defaultValue;
-    }
-  },
-  
-  set: (key: string, data: any) => {
-    try {
-      localStorage.setItem(key, JSON.stringify(data));
-    } catch (e: any) {
-      if (e.name === 'QuotaExceededError') {
-        alert('Se ha alcanzado el límite de almacenamiento local. No se pueden guardar más datos.');
-      } else {
-        console.error('Error guardando en localStorage:', e);
-      }
-    }
-  },
-
   // Transactions
-  getTransactions: (): Transaction[] => storageService.get(STORAGE_KEYS.TRANSACTIONS, []),
-  saveTransaction: (tx: Transaction) => {
-    const txs = storageService.getTransactions();
-    storageService.set(STORAGE_KEYS.TRANSACTIONS, [tx, ...txs]);
+  getTransactions: async (): Promise<Transaction[]> => {
+    return await db.transactions.orderBy('date').reverse().toArray();
   },
-  deleteTransaction: (id: string) => {
-    const txs = storageService.getTransactions();
-    storageService.set(STORAGE_KEYS.TRANSACTIONS, txs.filter(t => t.id !== id));
+  saveTransaction: async (tx: Transaction) => {
+    return await db.transactions.add(tx);
+  },
+  deleteTransaction: async (id: number) => {
+    return await db.transactions.delete(id);
   },
 
   // Budgets
-  getBudgets: (): Budget[] => storageService.get(STORAGE_KEYS.BUDGETS, []),
-  saveBudget: (budget: Budget) => {
-    const budgets = storageService.getBudgets();
-    const index = budgets.findIndex(b => b.id === budget.id);
-    if (index >= 0) budgets[index] = budget;
-    else budgets.push(budget);
-    storageService.set(STORAGE_KEYS.BUDGETS, budgets);
+  getBudgets: async (): Promise<Budget[]> => {
+    return await db.budgets.toArray();
   },
-  deleteBudget: (id: string) => {
-    const budgets = storageService.getBudgets();
-    storageService.set(STORAGE_KEYS.BUDGETS, budgets.filter(b => b.id !== id));
+  saveBudget: async (budget: Budget) => {
+    if (budget.id) {
+      return await db.budgets.put(budget);
+    } else {
+      return await db.budgets.add(budget);
+    }
+  },
+  deleteBudget: async (id: number) => {
+    return await db.budgets.delete(id);
   },
 
   // Goals
-  getGoals: (): SavingsGoal[] => storageService.get(STORAGE_KEYS.GOALS, []),
-  saveGoal: (goal: SavingsGoal) => {
-    const goals = storageService.getGoals();
-    const index = goals.findIndex(g => g.id === goal.id);
-    if (index >= 0) goals[index] = goal;
-    else goals.push(goal);
-    storageService.set(STORAGE_KEYS.GOALS, goals);
+  getGoals: async (): Promise<SavingsGoal[]> => {
+    return await db.goals.toArray();
   },
-  updateGoalAmount: (id: string, amount: number) => {
-    const goals = storageService.getGoals();
-    const index = goals.findIndex(g => g.id === id);
-    if (index >= 0) {
-      goals[index].currentAmount += amount;
-      storageService.set(STORAGE_KEYS.GOALS, goals);
+  saveGoal: async (goal: SavingsGoal) => {
+    if (goal.id) {
+      return await db.goals.put(goal);
+    } else {
+      return await db.goals.add(goal);
     }
   },
-
-  deleteGoal: (id: string) => {
-    const goals = storageService.getGoals();
-    storageService.set(STORAGE_KEYS.GOALS, goals.filter(g => g.id !== id));
+  updateGoalAmount: async (id: number, amount: number) => {
+    const goal = await db.goals.get(id);
+    if (goal) {
+      return await db.goals.update(id, { currentAmount: goal.currentAmount + amount });
+    }
+  },
+  deleteGoal: async (id: number) => {
+    return await db.goals.delete(id);
   },
 
   // Profile
-  getProfile: (): Profile | null => storageService.get(STORAGE_KEYS.PROFILE, null),
-  saveProfile: (profile: Profile) => storageService.set(STORAGE_KEYS.PROFILE, profile)
+  getProfile: async (): Promise<Profile | undefined> => {
+    const profiles = await db.profile.toArray();
+    return profiles[0];
+  },
+  saveProfile: async (profile: Profile) => {
+    return await db.profile.put(profile);
+  }
 };

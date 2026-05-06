@@ -786,10 +786,9 @@ export const Dashboard = ({ transactions, budgets, goals, onAddTransaction }: Da
                       {tx.type === 'income' ? '+' : '-'}{tx.amount}
                    </span>
                    <button 
-                     onClick={() => {
+                     onClick={async () => {
                         if(tx.id) {
-                           storageService.deleteTransaction(tx.id);
-                           window.location.reload();
+                           await storageService.deleteTransaction(tx.id);
                         }
                      }}
                      className="p-1 hover:bg-rose-500/10 rounded text-slate-700 hover:text-rose-500 transition-colors"

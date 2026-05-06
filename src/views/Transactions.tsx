@@ -74,7 +74,7 @@ export const TransactionsView = ({ transactions }: TransactionsViewProps) => {
     return matchesSearch && matchesType;
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
     
@@ -85,7 +85,6 @@ export const TransactionsView = ({ transactions }: TransactionsViewProps) => {
     }
 
     const newTransaction: Transaction = {
-      id: crypto.randomUUID(),
       userId: profile.userId || 'local',
       amount: parsedAmount,
       currency: profile?.preferredCurrency || 'USD',
@@ -95,16 +94,16 @@ export const TransactionsView = ({ transactions }: TransactionsViewProps) => {
       note
     };
 
-    storageService.saveTransaction(newTransaction);
+    await storageService.saveTransaction(newTransaction);
     setShowForm(false);
     setAmount('');
     setNote('');
-    window.location.reload();
   };
 
-  const handleDelete = (id: string) => {
-    storageService.deleteTransaction(id);
-    window.location.reload();
+  const handleDelete = async (id: number) => {
+    if (confirm('¿Estás seguro de eliminar este registro?')) {
+      await storageService.deleteTransaction(id);
+    }
   };
 
   return (

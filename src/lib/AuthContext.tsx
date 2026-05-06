@@ -1,13 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Profile } from '../types';
 import { storageService } from '../services/storageService';
+import { db } from './db';
 
 interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
-  setLocalProfile: (profile: Profile) => void;
-  updateProfile: (updates: Partial<Profile>) => void;
-  logout: () => void;
+  setLocalProfile: (profile: Profile) => Promise<void>;
+  updateProfile: (updates: Partial<Profile>) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
@@ -23,31 +24,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load local profile on boot
-    const savedProfile = storageService.getProfile();
-    setProfile(savedProfile);
-    setLoading(false);
+    const loadProfile = async () => {
+      try {
+        const savedProfile = await storageService.getProfile();
+        if (savedProfile) {
+          setProfile(savedProfile);
+        }
+      } catch (error) {
+        console.error('Error loading local profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadProfile();
   }, []);
 
-  const setLocalProfile = (p: Profile) => {
-    storageService.saveProfile(p);
+  const setLocalProfile = async (p: Profile) => {
+    await storageService.saveProfile(p);
     setProfile(p);
   };
 
-  const updateProfile = (updates: Partial<Profile>) => {
+  const updateProfile = async (updates: Partial<Profile>) => {
     if (!profile) return;
     const updated = { ...profile, ...updates };
-    setLocalProfile(updated);
+    await setLocalProfile(updated);
   };
 
-  const logout = () => {
-    // Only clear Arcade Finance specific data to not affect other apps on the domain
-    localStorage.removeItem('arcade_finance_profile');
-    localStorage.removeItem('arcade_finance_transactions');
-    localStorage.removeItem('arcade_finance_budgets');
-    localStorage.removeItem('arcade_finance_goals');
-    setProfile(null);
-    window.location.reload();
+  const logout = async () => {
+    if (confirm('¿Estás seguro de que deseas borrar TODOS tus datos locales? Esta acción es irreversible.')) {
+      await db.delete();
+      window.location.reload();
+    }
   };
 
   return (

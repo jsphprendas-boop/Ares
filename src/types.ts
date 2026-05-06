@@ -11,7 +11,7 @@ export interface Profile {
 }
 
 export interface Transaction {
-  id?: string;
+  id?: number;
   userId: string;
   amount: number;
   currency: Currency;
@@ -22,7 +22,7 @@ export interface Transaction {
 }
 
 export interface Budget {
-  id?: string;
+  id?: number;
   userId: string;
   category: string;
   amount: number;
@@ -31,7 +31,7 @@ export interface Budget {
 }
 
 export interface SavingsGoal {
-  id?: string;
+  id?: number;
   userId: string;
   name: string;
   targetAmount: number;
