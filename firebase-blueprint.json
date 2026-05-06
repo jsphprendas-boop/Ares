@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "preferredCurrency": { "type": "string" },
+        "language": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "userId", "displayName"]
+    },
+    "Transaction": {
+      "title": "Financial Transaction",
+      "description": "Income or expense record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "category": { "type": "string" },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "date": { "type": "string" },
+        "note": { "type": "string" }
+      },
+      "required": ["userId", "amount", "category", "type", "date"]
+    },
+    "Budget": {
+      "title": "Monthly Budget",
+      "description": "Budget limit for a category",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "period": { "type": "string" }
+      },
+      "required": ["userId", "category", "amount", "period"]
+    },
+    "SavingsGoal": {
+      "title": "Savings Goal",
+      "description": "Mission to save a specific amount",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "targetAmount": { "type": "number" },
+        "currentAmount": { "type": "number" },
+        "currency": { "type": "string" },
+        "deadline": { "type": "string" }
+      },
+      "required": ["userId", "name", "targetAmount", "currentAmount"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Financial logs"
+    },
+    "/budgets/{budgetId}": {
+      "schema": "Budget",
+      "description": "Category limits"
+    },
+    "/goals/{goalId}": {
+      "schema": "SavingsGoal",
+      "description": "Savings missions"
+    }
+  }
+}

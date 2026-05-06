@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-neon-cyan: #00ffff;
+  --color-neon-pink: #ff00ff;
+  --color-neon-lime: #39ff14;
+  --color-neon-purple: #9d00ff;
+  --color-neon-yellow: #fefe33;
+  --color-primary: #6366f1; /* Keeping indigo as primary for balance */
+  --color-bg: #ffffff;
+}
+
+body {
+  @apply font-sans bg-bg text-slate-800 antialiased overflow-x-hidden;
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(at 0% 0%, rgba(0, 255, 255, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 0, 255, 0.05) 0px, transparent 50%);
+  background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+}
+
+@layer components {
+  .clay-card {
+    @apply bg-white rounded-[2rem] p-6 transition-all duration-500 border border-slate-100;
+    box-shadow: 
+      12px 12px 24px rgba(148, 163, 184, 0.12),
+      -8px -8px 24px rgba(255, 255, 255, 0.9),
+      inset -2px -2px 8px rgba(148, 163, 184, 0.05);
+  }
+
+  .clay-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 
+      20px 20px 40px rgba(148, 163, 184, 0.18),
+      -10px -10px 30px rgba(255, 255, 255, 1),
+      inset -2px -2px 8px rgba(148, 163, 184, 0.05);
+  }
+
+  .clay-button {
+    @apply px-6 py-3 rounded-2xl font-black transition-all active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest text-xs;
+    box-shadow: 
+      6px 6px 12px rgba(0, 0, 0, 0.08),
+      inset -3px -3px 6px rgba(0, 0, 0, 0.05),
+      inset 3px 3px 6px rgba(255, 255, 255, 0.2);
+  }
+
+  .clay-button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  .clay-input {
+    @apply w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 outline-none focus:border-neon-cyan/50 focus:bg-white transition-all text-slate-700 placeholder:text-slate-400 font-bold;
+    box-shadow: inset 4px 4px 8px rgba(148, 163, 184, 0.08);
+  }
+
+  .neon-text-cyan {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+
+  .neon-text-pink {
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.2);
+  }
+
+  .neon-border-cyan {
+    @apply border-neon-cyan;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+  }
+
+  .neon-border-pink {
+    @apply border-neon-pink;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(255, 0, 255, 0.1);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-50;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes loading-bar {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
