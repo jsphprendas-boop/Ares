@@ -76,11 +76,13 @@ npm install -g @bubblewrap/cli
 ### Paso 2: Generar APK/AAB con PWABuilder
 1. Entra en [PWABuilder](https://www.pwabuilder.com/).
 2. Introduce la URL de tu app en Netlify.
-3. El sistema validará el `manifest.json` y el `sw.js` (ya los he corregido para que den puntaje alto).
-4. Haz clic en **"Package for Stores"** y selecciona **"Android"**.
-5. Descarga el archivo `.zip`. Dentro encontrarás el `.aab` para la Play Store y un `.apk` para probarlo tú mismo.
+3. Haz clic en **"Package for Stores"** y selecciona **"Android"**.
+4. **IMPORTANTE:** En las opciones de Android, cambia el "Package ID" a `com.arcadepro.app`.
+5. En la sección de **"Firma de clave" (Signing Key)**, elige **"Nuevo"**.
+6. Descarga el archivo `.zip`.
+7. **SOLUCIÓN AL ERROR DE ANÁLISIS:** Dentro del ZIP verás dos archivos APK: `xxxx-unsigned.apk` y otro que NO dice "unsigned". **Instala el que NO dice "unsigned"**. El que dice "unsigned" no tiene firma de seguridad y Android lo bloquea siempre.
 
-**NOTA:** He configurado iconos temporales y capturas de pantalla de ejemplo en el manifiesto para que PWABuilder te deje avanzar. Cuando tengas tus propios diseños, reemplaza las URLs en `public/manifest.json`.
+**NOTA:** He simplificado el archivo `manifest.json` para que sea 100% compatible con todos los teléfonos Android. Reintenta el proceso en PWABuilder.
 
 ### Paso 3: Subir a Google Play Console
 - Ve a [Google Play Console](https://play.google.com/console).

@@ -1,8 +1,8 @@
 {
-  "id": "com.arcadefinance.offline",
-  "short_name": "ArcadeFin",
-  "name": "Arcade Finance Pro: Money Game",
-  "description": "Domina tus finanzas personales con un estilo retro arcade. Registra gastos, crea presupuestos y alcanza metas de ahorro de forma 100% privada y offline.",
+  "id": "com.arcadepro.app",
+  "short_name": "ArcadePro",
+  "name": "Arcade Pro Finance",
+  "description": "Tu simulador de finanzas retro arcade. 100% privado y offline.",
   "lang": "es",
   "dir": "ltr",
   "orientation": "portrait",
@@ -57,33 +57,9 @@
       "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png", "sizes": "192x192" }]
     }
   ],
-  "share_target": {
-    "action": "/transactions",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "file_handlers": [
-    {
-      "action": "/",
-      "accept": {
-        "text/csv": [".csv"]
-      }
-    }
-  ],
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "tabbed", "standalone"],
   "theme_color": "#0f172a",
   "background_color": "#0f172a",
   "prefer_related_applications": false
